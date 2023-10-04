@@ -1,0 +1,39 @@
+@model HtmxAmCharts.Pages.IndexModel
+@{ ArgumentNullException.ThrowIfNull(Model); }
+
+<div id="tabbed-content">
+    <ul class="nav nav-tabs">
+        @foreach (IndexModel.Tab tab in Model.AvailableTabs)
+        {
+            <li class="nav-item">
+                <a
+                    href="#"
+                    hx-get="@Url.Page("Index", new {tab=tab.Type})"
+                    hx-target="#tabbed-content"
+                    class="nav-link @Model.IsSelectedCss(tab, "active")"
+                    aria-current="@Model.IsSelectedCss(tab, "page")">
+                    @tab.Name
+                </a>
+            </li>
+        }
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane show active p-1 mt-3" role="tabpanel">
+            <h2>@Model.ActiveTab?.Name</h2>
+            <hr>
+            <img alt="random image"
+                 class="rounded float-end m-2 mt-1 easeload"
+                 width="200"
+                 height="200"
+                 onload="this.style.opacity = 1;"
+                 src="https://picsum.photos/200/200?cache=@DateTime.Now.Ticks"/>
+            <p>
+                @if(Model.ActiveTab is IndexModel.Tab activeTab)
+                {
+                    @await Html.PartialAsync("_TabContent", activeTab)
+                }
+            </p>
+        </div>
+    </div>
+</div>
